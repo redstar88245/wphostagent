@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  wordpress-ai-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${WEB_PORT:-8080}:8080"
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./config:/app/config
+      - wp_backups:/home/appuser/backups
+    env_file:
+      - .env
+    environment:
+      - TZ=UTC
+    networks:
+      - ai_agent_network
+
+volumes:
+  wp_backups:
+    driver: local
+
+networks:
+  ai_agent_network:
+    driver: bridge
